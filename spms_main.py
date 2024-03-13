@@ -54,8 +54,7 @@ data_q_has_class = Queue()
 
 update_lock = threading.Lock()
 
-#def segment_vid(mask, video_path,label,frame_w,frame_h,data_queue,data_queue_spot,lot_segment):
-
+#video label for A window (Display)
 def video_a_label(event):
     global video_a_path_entry, mask_a_path_entry
     print('vid is clicked')
@@ -66,22 +65,22 @@ def video_a_label(event):
     vid_a_window.wm_attributes('-topmost', True)
 
     #widgets
-    ##label widgets
+    #label widgets
     video_path_Label1 = CTkLabel(vid_a_window, text="Video source:")
     mask_path_Label1 = CTkLabel(vid_a_window, text="Mask Path:")
 
 
-    ##entry widgets
+    #entry widgets
     video_a_path_entry = CTkEntry(vid_a_window, width=350, placeholder_text="Camera path")
     mask_a_path_entry = CTkEntry(vid_a_window, width=350, placeholder_text="Camera mask")
 
 
-    ##button widgets
+    #button widgets
     save_vid_a = CTkButton(vid_a_window, text='save',command=lambda: update_values_vid_a(mask_a_path_entry,video_a_path_entry, capA))
     video_a_dir = CTkButton(vid_a_window, width=30, text='...', command=lambda: open_directory(video_a_path_entry))
     mask_a_dir = CTkButton(vid_a_window, width=30, text='...', command=lambda: open_directory(mask_a_path_entry))
 
-    ##widget initialization
+    #widget initialization
     video_path_Label1.place(x=10, y=30)
     video_a_path_entry.place(x=90, y=30)
     video_a_dir.place(x=450, y=30)
@@ -89,6 +88,8 @@ def video_a_label(event):
     mask_a_path_entry.place(x=90, y=90)
     mask_a_dir.place(x=450, y=90)
     save_vid_a.place(x=185,y=150)
+
+#video label for B window (Display)
 def video_b_label(event):
     global video_b_path_entry, mask_b_path_entry
     print('vid is clicked')
@@ -122,6 +123,8 @@ def video_b_label(event):
     mask_b_path_entry.place(x=90, y=90)
     mask_b_dir.place(x=450, y=90)
     save_vid_b.place(x=185,y=150)
+
+#video label for A window (Display)   
 def video_c_label(event):
     global video_c_path_entry, mask_c_path_entry
     print('vid is clicked')
@@ -155,6 +158,7 @@ def video_c_label(event):
     mask_c_path_entry.place(x=90, y=90)
     mask_c_dir.place(x=450, y=90)
     save_vid_c.place(x=185,y=150)
+    
 def update_values_vid_a(entry_mask, entry_video, cap):
     global maskA, video_pathA
     with update_lock:
@@ -166,6 +170,7 @@ def update_values_vid_a(entry_mask, entry_video, cap):
             video_pathA = new_video_path
             cap.release()
             cap.open(video_pathA)
+            
 def update_values_vid_b(entry_mask, entry_video, cap):
     global maskB, video_pathB
     with update_lock:
@@ -189,6 +194,8 @@ def update_values_vid_c(entry_mask, entry_video, cap):
             video_pathC = new_video_path
             cap.release()
             cap.open(video_pathC)
+
+#Segements the parking lots spaces
 def segment_vid(mask, video_path, label, frame_w, frame_h, data_queue, data_queue_spot, lot_segment, cap):
     global avail ,f_element,frame_seg
     while True:
@@ -243,13 +250,9 @@ def segment_vid(mask, video_path, label, frame_w, frame_h, data_queue, data_queu
             label.image = image_tk
 
             # Send the current spots_status to the main thread
-            #data_queue.put(spots_status)
             avail = [lot_segment,spots_status]
-            #data_queue_spot.put(f_element)
 
-            # print(spot_status)
-            # print('empty indeces:{}'.format(empty_spots_indices))
-
+            #Switching frames w/o stoping threads
             with update_lock:
                 if lot_segment == 'A':
                     new_mask = maskA
@@ -285,6 +288,8 @@ def open_directory(cam_entry):
     cam_entry.delete(0, 'end')
     cam_entry.insert(0, directory)
 
+
+#Caputure Display
 def capture_label_content(widget, ss_spot, count=[0]):
     x, y, width, height = widget.winfo_rootx(), widget.winfo_rooty(), widget.winfo_width(), widget.winfo_height()
     image = ImageGrab.grab(bbox=(x, y, x + width, y + height))
@@ -308,6 +313,7 @@ def capture_frame(name):
             cv2.imwrite(frame_name, frame_seg[1])
             print('segment A frame successfully save')
             frame_is_not_a = False
+            
 def run_segment():
     # Replace with the absolute path to your virtual environment's activate script
     venv_activate_script = r"C:\Users\DICT\Desktop\SPMS\venv\Scripts\activate.bat"
