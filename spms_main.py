@@ -16,7 +16,7 @@ from util import get_parking_spots_bboxes, empty_or_not
 
 
 
-#variables
+
 #obj detection model
 user_classif_model = r'C:\Users\DICT\Desktop\Entrance vid\3_class_data_set\3_classification_weights_v2.1\best.pt' # teaching, non_teaching, staff
 yolo_pretrained_model = r"C:\Users\DICT\Desktop\SPMS\weights\yolov8n.pt" #for vehicle classification
